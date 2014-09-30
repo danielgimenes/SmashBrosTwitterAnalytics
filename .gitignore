@@ -1,6 +1,7 @@
-build/
+SmashBrosTwitterAnalytics/build/
 *.class
 .settings
 .classpath
 .project
 .metadata
+SmashBrosTwitterStreamProcessor/bin/
