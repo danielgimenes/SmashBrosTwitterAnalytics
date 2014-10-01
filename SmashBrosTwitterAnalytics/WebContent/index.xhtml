@@ -2,151 +2,76 @@
 <html xmlns="http://www.w3c.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 <h:head>
-	<script async="true" src="//platform.twitter.com/widgets.js"
+	<script async="async" src="//platform.twitter.com/widgets.js"
 		charset="utf-8" />
-	<style type="text/css">
-.ui-tagcloud {
-	width: 800px
-}
-
-body, div, span, h1, h2, h3, ul, li {
-	margin: 0;
-	padding: 0;
-}
-
-body {
-	font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic,
-		"AppleGothic", sans-serif;
-	color: #222;
-}
-
-.header h2 {
-	color: white;
-}
-
-.header h1 {
-	color: white;
-	font-size: 2.5em;
-	text-shadow: 0px 2px 3px #555;
-}
-
-.header {
-	padding: 10px 10px;
-	background: #ae1102; /* Old browsers */
-	background: -moz-linear-gradient(top, #ae1102 0%, #940e02 44%, #720a00 100%);
-	/* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ae1102),
-		color-stop(44%, #940e02), color-stop(100%, #720a00));
-	/* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #ae1102 0%, #940e02 44%, #720a00 100%);
-	/* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #ae1102 0%, #940e02 44%, #720a00 100%);
-	/* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #ae1102 0%, #940e02 44%, #720a00 100%);
-	/* IE10+ */
-	background: linear-gradient(to bottom, #ae1102 0%, #940e02 44%, #720a00 100%);
-	/* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ae1102',
-		endColorstr='#720a00', GradientType=0); /* IE6-9 */
-	/* SHADOW*/
-	-webkit-box-shadow: 0px 5px 15px 0px rgba(50, 50, 50, 0.75);
-	-moz-box-shadow: 0px 5px 15px 0px rgba(50, 50, 50, 0.75);
-	box-shadow: 0px 5px 15px 0px rgba(50, 50, 50, 0.75);
-	z-index: 99;
-}
-
-body {
-	
-}
-
-hr {
-	border: 0;
-	height: 0;
-	width: 98%;
-	border-top: 1px solid rgba(0, 0, 0, 0.2);
-	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.footer {
-	color: gray;
-	padding-left: 20px;
-}
-
-.main-container {
-	display: table;
-	z-index: 50;
-	padding-left: 20px;
-}
-
-.content-area {
-	padding: 20px 0px;
-	margin: 0;
-	width: 1000px;
-	display: table-cell;
-}
-
-.latest-area {
-	padding: 0px 15px;
-	display: table-cell;
-}
-</style>
+	<script src="jqcloud.js" charset="utf-8" />
+	<link rel="stylesheet" href="style.css" />
+	<link rel="stylesheet" href="jqcloud.css" />
+	<script type="text/javascript">
+    var word_array = [
+        #{analyticsBean.wordCloudJSList}
+    ];
+    $(function() {
+      $("#wordCloud").jQCloud(word_array, {
+    	  width: 800,
+    	  height: 300,
+    	  removeOverflowing: false
+    	});
+    });
+	</script>
 </h:head>
 <h:body>
 	<div class="header">
-		<h1>#SmashBros Twitter Analytics</h1>
-		<br />
-		<h2 style="padding: 0px 10px;">2,020,190,113 captured tweets</h2>
-		<br />
+		<div class="header-title">
+			<h1>#SmashBros Twitter Analytics</h1>
+		</div>
+		<div class="menu">
+			<a href="about.xhtml">About</a> <a href="contact.xhtml"
+				style="padding-left: 15px">Contact</a>
+		</div>
 	</div>
 	<div class="main-container">
 		<div class="content-area">
-			<h2>Most cited words:</h2>
-			<p:tagCloud model="#{analyticsBean.tweetWordsCloudModel}"
-				style="border: 0; margin: 10px" />
+			<h2 class="numOfTweets">#{analyticsBean.totalTweetCount}
+				captured tweets... [Status: online]</h2>
 			<br /> <br />
-			<p:chart type="line"
-				model="#{analyticsBean.tweetCountPerTimeChartModel}"
-				style="width:800px" />
+			<h2 class="block-title">Most cited words:</h2>
+			<div id="wordCloud" />
+			<br /> <br />
+			<h2 class="block-title">Characters rank (tweet mentions):</h2>
+			<p:chart styleClass="charRankChart" type="bar"
+				model="#{analyticsBean.characterRankChartModel}" />
+			<br /> <br />
+			<h2 class="block-title">Tweets in the last hours:</h2>
+			<p:chart styleClass="tweetCountTimeChart" type="line"
+				model="#{analyticsBean.tweetCountPerTimeChartModel}" />
+			<br /> <br />
+			<h2 class="block-title">Tweets in the last days:</h2>
+			<p:chart styleClass="tweetCountDayChart" type="bar"
+				model="#{analyticsBean.tweetCountPerDayChartModel}" />
 		</div>
 		<div class="latest-area">
-			<h2>Latest tweets...</h2>
-			<blockquote class="twitter-tweet" lang="pt" width="400px">
-				<p>
-					Creo que ya es momento de un nuevo video hablando de los rumores de
-					<a href="https://twitter.com/hashtag/SmashBros?src=hash">#SmashBros</a>.
-					He estado en un hiato por largo tiempo.
-				</p>
-				&#x2014; Luddoj (@Luddoj) <a
-					href="https://twitter.com/Luddoj/status/516691307033804801">29
-					setembro 2014</a>
-			</blockquote>
-			<blockquote class="twitter-tweet" lang="pt" width="400px">
-				<p>
-					Creo que ya es momento de un nuevo video hablando de los rumores de
-					<a href="https://twitter.com/hashtag/SmashBros?src=hash">#SmashBros</a>.
-					He estado en un hiato por largo tiempo.
-				</p>
-				&#x2014; Luddoj (@Luddoj) <a
-					href="https://twitter.com/Luddoj/status/516691307033804801">29
-					setembro 2014</a>
-			</blockquote>
-			<blockquote class="twitter-tweet" lang="pt" width="400px">
-				<p>
-					Creo que ya es momento de un nuevo video hablando de los rumores de
-					<a href="https://twitter.com/hashtag/SmashBros?src=hash">#SmashBros</a>.
-					He estado en un hiato por largo tiempo.
-				</p>
-				&#x2014; Luddoj (@Luddoj) <a
-					href="https://twitter.com/Luddoj/status/516691307033804801">29
-					setembro 2014</a>
-			</blockquote>
+			<h2 class="latestTweetsTitle">Latest tweets...</h2>
+			<ui:repeat value="#{analyticsBean.latestTweets}" var="tweet">
+				<blockquote class="twitter-tweet" lang="#{tweet.lang}" width="400px">
+					<p>#{tweet.tweet}</p>
+					&#x2014; #{tweet.userName} <a
+						href="https://twitter.com/#{tweet.screenName}/status/#{tweet.id}">#{analyticsBean.formatDate(tweet.tweetTime)}</a>
+				</blockquote>
+			</ui:repeat>
 		</div>
 	</div>
 	<br />
 	<br />
 	<hr />
-	<div class="footer">Developed by: Daniel Gimenes</div>
+	<div class="footer">
+		Created by: <a href="mailto:danielcgimenes@gmail.com">Daniel
+			Gimenes</a> <a href="https://twitter.com/danielgimenes">@danielgimenes</a>
+	</div>
+	<br />
+	<br />
 </h:body>
 </html>

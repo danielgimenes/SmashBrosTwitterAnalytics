@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3c.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+	<script async="async" src="//platform.twitter.com/widgets.js"
+		charset="utf-8" />
+	<script src="wordcloud2.js" charset="utf-8" />
+	<script src="jqcloud.js" charset="utf-8" />
+	<link rel="stylesheet" href="style.css" />
+	<script type="text/javascript">
+	function createTagCloud() {
+		WordCloud(document.getElementById('wordCloud'), { 
+			list: #{analyticsBean.wordCloudJSList},
+			gridSize: Math.round(16 * $('#wordCloud').width() / 1024),
+			weightFactor: function (size) {
+			  return Math.pow(size, 2.3) * $('#wordCloud').width() / 1024;
+			},
+			fontFamily: 'Times, serif',
+			color: function (word, weight) {
+			  return (weight === 12) ? '#f02222' : '#c09292';
+			},
+			rotateRatio: 0.1,
+			backgroundColor: '#fff'
+		} );
+	}
+	
+	/*!
+     * Create an array of word objects, each representing a word in the cloud
+     */
+    var word_array = [
+        {text: "Lorem", weight: 15},
+        {text: "Ipsum", weight: 9, link: "http://jquery.com/"},
+        {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
+        {text: "Sit", weight: 7},
+        {text: "Amet", weight: 5}
+        // ...as many words as you want
+    ];
+
+    $(function() {
+      // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
+      $("#wordCloud").jQCloud(word_array);
+    });
+	</script>
+</h:head>
+<h:body>
+	<div class="header">
+		<h1>#SmashBros Twitter Analytics</h1>
+		<br />
+		<h2>#{analyticsBean.totalTweetCount} captured tweets</h2>
+		<br />
+	</div>
+	<div class="main-container">
+		<div class="content-area">
+			<h2>Most cited words:</h2>
+			<canvas id="wordCloud2" width="800" height="400" />
+			<div id="wordCloud"/>
+			<br /> <br />
+			<p:tagCloud styleClass="wordCloud"
+				model="#{analyticsBean.tweetWordsCloudModel}" />
+			<br /> <br />
+			<p:chart styleClass="tweetCountChart" type="line"
+				model="#{analyticsBean.tweetCountPerTimeChartModel}" />
+		</div>
+		<div class="latest-area">
+			<h2>Latest tweets...</h2>
+			<ui:repeat value="#{analyticsBean.latestTweets}" var="tweet">
+				<blockquote class="twitter-tweet" lang="#{tweet.lang}" width="400px">
+					<p>#{tweet.tweet}</p>
+					&#x2014; #{tweet.userName} <a
+						href="https://twitter.com/#{tweet.screenName}/status/#{tweet.id}">#{analyticsBean.formatDate(tweet.tweetTime)}</a>
+				</blockquote>
+			</ui:repeat>
+		</div>
+	</div>
+	<br />
+	<br />
+	<hr />
+	<div class="footer">Developed by: Daniel Gimenes</div>
+</h:body>
+</html>

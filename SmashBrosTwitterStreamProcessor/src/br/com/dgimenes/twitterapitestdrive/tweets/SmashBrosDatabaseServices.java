@@ -28,7 +28,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,9 +41,11 @@ public class SmashBrosDatabaseServices {
 	private static final String USER = "postgres";
 	private static final String PASSWD = "cogitoR341";
 	private static final String DB_NAME = "smashbrostweets_db";
-	private static final String INSERT_TWEET_SQL = "INSERT INTO tweets(id, time, rt, rtid, lang, username, tweet) VALUES (?,?,?,?,?,?,?);";
+	private static final String INSERT_TWEET_SQL = "INSERT INTO tweets(id, time, rt, rtid, lang, username, screenname, tweet) VALUES (?,?,?,?,?,?,?,?);";
 	private static final String ALL_TWEET_IDS_WHERE_LANG_NULL_SQL = "SELECT id FROM tweets WHERE lang IS NULL;";
 	private static final String UPDATE_TWEET_RT_AND_LANG_SQL = "UPDATE tweets SET rt = ?, rtid = ?, lang = ? WHERE id = ?;";
+	private static final String ALL_TWEET_IDS_WHERE_SCREEN_NAME_IS_NULL_SQL = "SELECT id FROM tweets WHERE screenname IS NULL;";
+	private static final String UPDATE_TWEET_SCREEN_NAME_SQL = "UPDATE tweets SET screenname = ? WHERE id = ?;";
 	private static Connection conn;
 
 	private static SmashBrosDatabaseServices instance;
@@ -94,7 +95,7 @@ public class SmashBrosDatabaseServices {
 	}
 
 	public synchronized void persistTweet(long tweetId, Date tweetTime, boolean isRT, long rtId, String lang,
-			String userName, String tweet) throws SQLException {
+			String userName, String screenName, String tweet) throws SQLException {
 		if (conn == null || conn.isClosed()) {
 			createConnection();
 		}
@@ -106,10 +107,38 @@ public class SmashBrosDatabaseServices {
 		statement.setLong(4, rtId);
 		statement.setString(5, lang);
 		statement.setString(6, userName);
-		statement.setString(7, tweet);
+		statement.setString(7, screenName);
+		statement.setString(8, tweet);
 		statement.executeUpdate();
 		conn.commit();
 		conn.setAutoCommit(true);
 		System.out.println(String.format("tweet [%d] persisted", tweetId));
+	}
+
+	public List<Long> getAllTweetIdsWhereScreenNameIsNull() throws SQLException {
+		if (conn == null || conn.isClosed()) {
+			createConnection();
+		}
+		PreparedStatement statement = conn.prepareStatement(ALL_TWEET_IDS_WHERE_SCREEN_NAME_IS_NULL_SQL);
+		ResultSet rs = statement.executeQuery();
+		List<Long> ids = new ArrayList<Long>();
+		while (rs.next()) {
+			ids.add(rs.getLong("id"));
+		}
+		return ids;
+	}
+
+	public void updateTweetScreenName(Long tweetId, String screenName) throws SQLException {
+		if (conn == null || conn.isClosed()) {
+			createConnection();
+		}
+		conn.setAutoCommit(false);
+		PreparedStatement statement = conn.prepareStatement(UPDATE_TWEET_SCREEN_NAME_SQL);
+		statement.setString(1, screenName);
+		statement.setLong(2, tweetId);
+		statement.executeUpdate();
+		conn.commit();
+		conn.setAutoCommit(true);
+		System.out.println(String.format("tweet [%d] updated", tweetId));
 	}
 }

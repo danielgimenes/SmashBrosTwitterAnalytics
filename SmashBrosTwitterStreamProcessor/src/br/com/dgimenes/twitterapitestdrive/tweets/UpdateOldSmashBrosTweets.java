@@ -43,14 +43,12 @@ public class UpdateOldSmashBrosTweets {
 		TwitterFactory tf = new TwitterFactory(cb.build());
 		Twitter twitter = tf.getInstance();
 		try {
-			List<Long> ids = SmashBrosDatabaseServices.getInstance().getAllTweetIdsWhereLangIsNull();
+			List<Long> ids = SmashBrosDatabaseServices.getInstance().getAllTweetIdsWhereScreenNameIsNull();
 			for (Long tweetId : ids) {
 				try {
 					Status status = twitter.showStatus(tweetId);
-					long rtId = status.getRetweetedStatus() == null ? 0 : status.getRetweetedStatus().getId();
-					String lang = status.getLang();
-					boolean isRT = status.isRetweet();
-					SmashBrosDatabaseServices.getInstance().updateTweetRTandLang(tweetId, isRT, rtId, lang);
+					String screenName = status.getUser().getScreenName();
+					SmashBrosDatabaseServices.getInstance().updateTweetScreenName(tweetId, screenName);
 				} catch (TwitterException e) {
 					e.printStackTrace();
 				} catch (SQLException e) {

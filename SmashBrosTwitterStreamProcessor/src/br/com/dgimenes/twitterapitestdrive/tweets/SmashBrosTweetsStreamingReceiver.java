@@ -46,6 +46,7 @@ public class SmashBrosTweetsStreamingReceiver {
 				long tweetId = status.getId();
 				Date tweetTime = status.getCreatedAt();
 				String userName = status.getUser().getName();
+				String screenName = status.getUser().getScreenName();
 				String tweet = status.getText();
 				long rtId = status.getRetweetedStatus() == null ? 0 : status.getRetweetedStatus().getId();
 				String lang = status.getLang();
@@ -53,7 +54,7 @@ public class SmashBrosTweetsStreamingReceiver {
 				System.out.println((isRT ? "RT " : "") + String.format("[%1$d] %2$s: %3$s", tweetId, userName, tweet));
 				try {
 					SmashBrosDatabaseServices.getInstance().persistTweet(tweetId, tweetTime, isRT, rtId, lang,
-							userName, tweet);
+							userName, screenName, tweet);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
