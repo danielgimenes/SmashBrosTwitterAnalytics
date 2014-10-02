@@ -31,16 +31,33 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.control.Configuration;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.datamapping.SmashBrosDatabaseServices;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.exception.InvalidConfigurationFileException;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.model.TwitterAppAccount;
 
 public class UpdateOldSmashBrosTweets {
 
 	public static void main(String[] args) {
+		Configuration config;
+		if (args != null && args.length == 1) {
+			try {
+				config = Configuration.loadConfigFromFile(args[0]);
+			} catch (InvalidConfigurationFileException e) {
+				System.err.println("Invalid configuration file.\n");
+				printUsageMessage();
+				return;
+			}
+		} else {
+			printUsageMessage();
+			return;
+		}
+		TwitterAppAccount twitterAppAccount = config.getTwitterAppAccount();
 		ConfigurationBuilder cb = new ConfigurationBuilder();
-		cb.setDebugEnabled(true).setOAuthConsumerKey(TwitterDebugAuthenticationData.API_KEY)
-				.setOAuthConsumerSecret(TwitterDebugAuthenticationData.API_SECRET)
-				.setOAuthAccessToken(TwitterDebugAuthenticationData.ACCESS_TOKEN)
-				.setOAuthAccessTokenSecret(TwitterDebugAuthenticationData.ACCESS_TOKEN_SECRET);
+		cb.setDebugEnabled(true).setOAuthConsumerKey(twitterAppAccount.getApiKey())
+				.setOAuthConsumerSecret(twitterAppAccount.getApiKeySecret())
+				.setOAuthAccessToken(twitterAppAccount.getAccessToken())
+				.setOAuthAccessTokenSecret(twitterAppAccount.getAccessTokenSecret());
 		TwitterFactory tf = new TwitterFactory(cb.build());
 		Twitter twitter = tf.getInstance();
 		try {
@@ -60,5 +77,14 @@ public class UpdateOldSmashBrosTweets {
 			e.printStackTrace();
 		}
 		System.out.println("finished");
+	}
+	
+	private static void printUsageMessage() {
+		System.err
+				.println("Usage:\n\n\tjava -jar SmashBrosTwitterStreamProcessor.jar <configuration_file_path>\n\nConfiguration file should have the following data in Java Properties format:\n");
+		for (String configItemName : Configuration.getConfigurationItemNames()) {
+			System.err.println("\t" + configItemName);
+		}
+		System.err.println();
 	}
 }

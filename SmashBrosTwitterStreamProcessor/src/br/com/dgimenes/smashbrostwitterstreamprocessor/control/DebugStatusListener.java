@@ -21,27 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package br.com.dgimenes.smashbrostwitterstreamprocessor.util;
+package br.com.dgimenes.smashbrostwitterstreamprocessor.control;
 
-public abstract class TwitterDebugAuthenticationData {
+import twitter4j.StallWarning;
+import twitter4j.Status;
+import twitter4j.StatusDeletionNotice;
+import twitter4j.StatusListener;
 
-	// TestApp
+public class DebugStatusListener implements StatusListener {
 
-	// public static final String API_KEY = "V70qH7rv6EHwi3cLksVht4LC0";
-	// public static final String API_SECRET =
-	// "OFYhu7d9IJZEdeggIErip71Ldayssw6xNw27NDaG8prDQDea88";
+	@Override
+	public void onException(Exception exception) {
+		System.out.println("onException: " + exception);
+	}
 
-	// public static final String ACCESS_TOKEN =
-	// "2505370329-QwC4gXerYtwIGXbZRuNCXJImMHuqkJCulxBBwiu";
-	// public static final String ACCESS_TOKEN_SECRET =
-	// "0eQf1Oadq8pYUYZFSiExGPuajBQQxUYmtbBEwYFuOKCls";
+	@Override
+	public void onDeletionNotice(StatusDeletionNotice notice) {
+		System.out.println("onDeletionNotice: " + notice);
+	}
 
-	// dgDebugApp
+	@Override
+	public void onScrubGeo(long arg0, long arg1) {
+		System.out.println("onScrubGeo: " + arg0 + ", " + arg1);
+	}
 
-	public static final String API_KEY = "ZbZZ9LY7xDaz0zaFdydzNDbKE";
-	public static final String API_SECRET = "nl3AtR35rXnH3YUVmkKrdUUONn8o6FneYtN2dVy395Cjq209GE";
+	@Override
+	public void onStallWarning(StallWarning warning) {
+		System.out.println("onStallWarning: " + warning);
+	}
 
-	public static final String ACCESS_TOKEN = "41958518-RhZRVGArombjhpntHaBQ2Fpmw5SuEbSsfPWMD5B0w";
-	public static final String ACCESS_TOKEN_SECRET = "gq0jfkzI1q0goaXV4kT1Ct5JlsFH6u9xFf1OVLVY3OZnW";
+	@Override
+	public void onStatus(Status status) {
+		System.out.println("onStatus: " + status);
+	}
+
+	@Override
+	public void onTrackLimitationNotice(int arg0) {
+		System.out.println("onTrackLimitationNotice: " + arg0);
+	}
 
 }

@@ -23,6 +23,9 @@
  */
 package br.com.dgimenes.smashbrostwitterstreamprocessor.util;
 
+import br.com.dgimenes.smashbrostwitterstreamprocessor.control.Configuration;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.exception.InvalidConfigurationFileException;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.model.TwitterAppAccount;
 import twitter4j.Query;
 import twitter4j.Query.ResultType;
 import twitter4j.QueryResult;
@@ -34,26 +37,49 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class SmashBrosTweetsFetcher {
 	public static void main(String[] args) {
-		System.out.println(SmashBrosTweetsFetcher.class.getSimpleName());
+		Configuration config;
+		if (args != null && args.length == 1) {
+			try {
+				config = Configuration.loadConfigFromFile(args[0]);
+			} catch (InvalidConfigurationFileException e) {
+				System.err.println("Invalid configuration file.\n");
+				printUsageMessage();
+				return;
+			}
+		} else {
+			printUsageMessage();
+			return;
+		}
+		TwitterAppAccount twitterAppAccount = config.getTwitterAppAccount();
 		ConfigurationBuilder cb = new ConfigurationBuilder();
-		cb.setDebugEnabled(true).setOAuthConsumerKey(TwitterDebugAuthenticationData.API_KEY)
-				.setOAuthConsumerSecret(TwitterDebugAuthenticationData.API_SECRET)
-				.setOAuthAccessToken(TwitterDebugAuthenticationData.ACCESS_TOKEN)
-				.setOAuthAccessTokenSecret(TwitterDebugAuthenticationData.ACCESS_TOKEN_SECRET);
+		cb.setDebugEnabled(true).setOAuthConsumerKey(twitterAppAccount.getApiKey())
+				.setOAuthConsumerSecret(twitterAppAccount.getApiKeySecret())
+				.setOAuthAccessToken(twitterAppAccount.getAccessToken())
+				.setOAuthAccessTokenSecret(twitterAppAccount.getAccessTokenSecret());
 		TwitterFactory tf = new TwitterFactory(cb.build());
 		Twitter twitter = tf.getInstance();
 		Query query = new Query();
 		query.setCount(5);
-		query.setQuery("#SmashBros");
+		query.setQuery(config.getTweetTagsToTrack()[0]);
 		query.setResultType(ResultType.recent);
 		QueryResult result;
 		try {
 			result = twitter.search(query);
 			for (Status status : result.getTweets()) {
-				System.out.println("@" + status.getUser().getName() + " @" + status.getUser().getScreenName() + ":\n\t" + status.getText() + "\n");
+				System.out.println("@" + status.getUser().getName() + " @" + status.getUser().getScreenName() + ":\n\t"
+						+ status.getText() + "\n");
 			}
 		} catch (TwitterException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void printUsageMessage() {
+		System.err
+				.println("Usage:\n\n\tjava -jar SmashBrosTwitterStreamProcessor.jar <configuration_file_path>\n\nConfiguration file should have the following data in Java Properties format:\n");
+		for (String configItemName : Configuration.getConfigurationItemNames()) {
+			System.err.println("\t" + configItemName);
+		}
+		System.err.println();
 	}
 }

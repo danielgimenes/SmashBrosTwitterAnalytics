@@ -21,14 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package br.com.dgimenes.smashbrostwitterstreamprocessor.model;
+package br.com.dgimenes.smashbrostwitterstreamprocessor.exception;
 
-public abstract class TwitterDebugAuthenticationData {
-
-	public static final String API_KEY = "";
-	public static final String API_SECRET = "";
-
-	public static final String ACCESS_TOKEN = "";
-	public static final String ACCESS_TOKEN_SECRET = "";
+public class InvalidConfigurationFileException extends Exception {
+	private static final long serialVersionUID = -3085812330973053257L;
 
 }

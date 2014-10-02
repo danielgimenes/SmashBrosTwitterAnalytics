@@ -24,80 +24,52 @@
 package br.com.dgimenes.smashbrostwitterstreamprocessor.control;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Date;
 
 import twitter4j.FilterQuery;
-import twitter4j.StallWarning;
-import twitter4j.Status;
-import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
 import twitter4j.TwitterException;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 import twitter4j.conf.ConfigurationBuilder;
-import br.com.dgimenes.smashbrostwitterstreamprocessor.datamapping.SmashBrosDatabaseServices;
-import br.com.dgimenes.smashbrostwitterstreamprocessor.util.TwitterDebugAuthenticationData;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.exception.InvalidConfigurationFileException;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.model.TwitterAppAccount;
 
 public class SmashBrosTweetsStreamingReceiver {
-
 	public static void main(String[] args) throws TwitterException, IOException {
-		StatusListener listener = new StatusListener() {
-			@Override
-			public void onStatus(Status status) {
-				long tweetId = status.getId();
-				Date tweetTime = status.getCreatedAt();
-				String userName = status.getUser().getName();
-				String screenName = status.getUser().getScreenName();
-				String tweet = status.getText();
-				long rtId = status.getRetweetedStatus() == null ? 0 : status.getRetweetedStatus().getId();
-				String lang = status.getLang();
-				boolean isRT = status.isRetweet();
-				System.out.println((isRT ? "RT " : "") + String.format("[%1$d] %2$s: %3$s", tweetId, userName, tweet));
-				try {
-					SmashBrosDatabaseServices.getInstance().persistTweet(tweetId, tweetTime, isRT, rtId, lang,
-							userName, screenName, tweet);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+		Configuration config;
+		if (args != null && args.length == 1) {
+			try {
+				config = Configuration.loadConfigFromFile(args[0]);
+			} catch (InvalidConfigurationFileException e) {
+				System.err.println("Invalid configuration file.\n");
+				printUsageMessage();
+				return;
 			}
-
-			@Override
-			public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
-				System.err.println("StatusDeletionNotice");
-			}
-
-			@Override
-			public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
-				System.err.println("ERROR: MISSED " + numberOfLimitedStatuses + " TWEETS");
-			}
-
-			@Override
-			public void onException(Exception ex) {
-				ex.printStackTrace();
-			}
-
-			@Override
-			public void onScrubGeo(long arg0, long arg1) {
-				System.err.println("onScrubGeo");
-
-			}
-
-			@Override
-			public void onStallWarning(StallWarning arg0) {
-				System.err.println("onStallWarning");
-
-			}
-		};
+		} else {
+			printUsageMessage();
+			return;
+		}
+		TwitterAppAccount twitterAppAccount = config.getTwitterAppAccount();
 		ConfigurationBuilder cb = new ConfigurationBuilder();
-		cb.setDebugEnabled(true).setOAuthConsumerKey(TwitterDebugAuthenticationData.API_KEY)
-				.setOAuthConsumerSecret(TwitterDebugAuthenticationData.API_SECRET)
-				.setOAuthAccessToken(TwitterDebugAuthenticationData.ACCESS_TOKEN)
-				.setOAuthAccessTokenSecret(TwitterDebugAuthenticationData.ACCESS_TOKEN_SECRET);
+		cb.setDebugEnabled(true).setOAuthConsumerKey(twitterAppAccount.getApiKey())
+				.setOAuthConsumerSecret(twitterAppAccount.getApiKeySecret())
+				.setOAuthAccessToken(twitterAppAccount.getAccessToken())
+				.setOAuthAccessTokenSecret(twitterAppAccount.getAccessTokenSecret());
+//		StatusListener listener = new SmashBrosTwitterStatusListener();
+		StatusListener listener = new DebugStatusListener();
 		TwitterStream twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
 		twitterStream.addListener(listener);
 		FilterQuery query = new FilterQuery();
-		query.track(new String[] { "#SmashBros" });
+		query.track(config.getTweetTagsToTrack());
 		twitterStream.filter(query);
+	}
+
+	private static void printUsageMessage() {
+		System.err
+				.println("Usage:\n\n\tjava -jar SmashBrosTwitterStreamProcessor.jar <configuration_file_path>\n\nConfiguration file should have the following data in Java Properties format:\n");
+		for (String configItemName : Configuration.getConfigurationItemNames()) {
+			System.err.println("\t" + configItemName);
+		}
+		System.err.println();
 	}
 }
