@@ -45,16 +45,20 @@ import org.primefaces.model.chart.LineChartModel;
 import br.com.dgimenes.smashbrostwitteranalytics.website.control.AnalyticsController;
 import br.com.dgimenes.smashbrostwitteranalytics.website.control.TweetController;
 import br.com.dgimenes.smashbrostwitteranalytics.website.model.Tweet;
+import br.com.dgimenes.smashbrostwitteranalytics.website.model.dto.CharacterRankPosition;
+import br.com.dgimenes.smashbrostwitteranalytics.website.model.dto.TweetCountPerDay;
 import br.com.dgimenes.smashbrostwitteranalytics.website.model.dto.TweetCountPerHour;
 import br.com.dgimenes.smashbrostwitteranalytics.website.model.dto.WordCount;
 
 @Named(value = "analyticsBean")
 @RequestScoped
 public class AnalyticsBean {
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+	private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd");
 	private static final DateFormat tweetDateFormat = new SimpleDateFormat("HH:mm - dd MMM yyyy");
 	private static final int NUMBER_OF_HOURS_TO_DISPLAY_ON_BAR_CHART = 6;
 	private static final int NUMBER_OF_LATEST_TWEETS = 3;
+	private static final int NUMBER_OF_DAYS_TO_DISPLAY_ON_BAR_CHART = 6;
 	private List<Tweet> latestTweets;
 	private LineChartModel tweetCountPerTimeChartModel;
 	private BarChartModel tweetCountPerDayChartModel;
@@ -86,8 +90,6 @@ public class AnalyticsBean {
 		Calendar calendar = Calendar.getInstance();
 		Date now = calendar.getTime();
 		calendar.add(Calendar.HOUR, (NUMBER_OF_HOURS_TO_DISPLAY_ON_BAR_CHART - 1) * -1);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
 		List<TweetCountPerHour> tweetCountPerHour = analyticsController.getTweetCountPerHour(calendar.getTime(), now);
 		tweetCountPerTimeChartModel = new LineChartModel();
 		tweetCountPerTimeChartModel.setShowPointLabels(true);
@@ -96,32 +98,26 @@ public class AnalyticsBean {
 		tweetCountPerTimeChartModel.setAnimate(true);
 		tweetCountPerTimeChartModel.setShadow(false);
 		Date endTime;
-		long biggest = 0;
 		for (TweetCountPerHour tweetCount : tweetCountPerHour) {
 			calendar = Calendar.getInstance();
 			calendar.setTime(tweetCount.getHour());
 			calendar.add(Calendar.HOUR, 1);
 			endTime = calendar.getTime();
-			chartSeries.set(dateFormat.format(tweetCount.getHour()) + " - " + dateFormat.format(endTime),
+			chartSeries.set(timeFormat.format(tweetCount.getHour()) + " - " + timeFormat.format(endTime),
 					tweetCount.getCount());
-			biggest = Math.max(biggest, tweetCount.getCount());
 		}
 		tweetCountPerTimeChartModel.addSeries(chartSeries);
 		tweetCountPerTimeChartModel.getAxes().put(AxisType.X, new CategoryAxis());
 		Axis yAxis = tweetCountPerTimeChartModel.getAxis(AxisType.Y);
 		yAxis.setLabel("Tweets");
 		yAxis.setMin(0);
-		int max = (int) Math.ceil(biggest / 100) * 100 + 100; // higher hundred
-		yAxis.setMax(max);
 	}
 
 	private void createDayBarChart() {
 		Calendar calendar = Calendar.getInstance();
 		Date now = calendar.getTime();
-		calendar.add(Calendar.HOUR, (NUMBER_OF_HOURS_TO_DISPLAY_ON_BAR_CHART - 1) * -1);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		List<TweetCountPerHour> tweetCountPerHour = analyticsController.getTweetCountPerHour(calendar.getTime(), now);
+		calendar.add(Calendar.DATE, (NUMBER_OF_DAYS_TO_DISPLAY_ON_BAR_CHART - 1) * -1);
+		List<TweetCountPerDay> tweetCountPerDay = analyticsController.getTweetCountPerDay(calendar.getTime(), now);
 		tweetCountPerDayChartModel = new BarChartModel();
 		tweetCountPerDayChartModel.setShowPointLabels(true);
 		ChartSeries chartSeries = new ChartSeries();
@@ -129,23 +125,19 @@ public class AnalyticsBean {
 		tweetCountPerDayChartModel.setAnimate(true);
 		tweetCountPerDayChartModel.setShadow(false);
 		Date endTime;
-		long biggest = 0;
-		for (TweetCountPerHour tweetCount : tweetCountPerHour) {
+		for (TweetCountPerDay tweetCount : tweetCountPerDay) {
 			calendar = Calendar.getInstance();
-			calendar.setTime(tweetCount.getHour());
-			calendar.add(Calendar.HOUR, 1);
+			calendar.setTime(tweetCount.getDay());
+			calendar.add(Calendar.DATE, 1);
 			endTime = calendar.getTime();
-			chartSeries.set(dateFormat.format(tweetCount.getHour()) + " - " + dateFormat.format(endTime),
+			chartSeries.set(dateFormat.format(tweetCount.getDay()) + " - " + dateFormat.format(endTime),
 					tweetCount.getCount());
-			biggest = Math.max(biggest, tweetCount.getCount());
 		}
 		tweetCountPerDayChartModel.addSeries(chartSeries);
 		tweetCountPerDayChartModel.getAxes().put(AxisType.X, new CategoryAxis());
 		Axis yAxis = tweetCountPerDayChartModel.getAxis(AxisType.Y);
 		yAxis.setLabel("Tweets");
 		yAxis.setMin(0);
-		int max = (int) Math.ceil(biggest / 100) * 100 + 100; // higher hundred
-		yAxis.setMax(max);
 	}
 
 	private void createRankBarChart() {
@@ -155,48 +147,14 @@ public class AnalyticsBean {
 		chartSeries.setLabel("Tweets");
 		characterRankChartModel.setAnimate(true);
 		characterRankChartModel.setShadow(false);
-//		chartSeries.set("Meta Knight", 20);
-//		chartSeries.set("Shulk", 30);
-//		chartSeries.set("Robin", 60);
-//		chartSeries.set("Captain Falcon", 200);
-//		chartSeries.set("Pac-Man", 300);
-//		chartSeries.set("Palutena", 300);
-//		chartSeries.set("Mii Fighter", 300);
-//		chartSeries.set("Ike", 300);
-//		chartSeries.set("Greninja", 400);
-//		chartSeries.set("Charizard",400);
-//		chartSeries.set("Yoshi", 500);
-//		chartSeries.set("Sheik", 500);
-//		chartSeries.set("Diddy Kong", 500);
-//		chartSeries.set("Little Mac", 600);
-//		chartSeries.set("Lucario", 600);
-//		chartSeries.set("King Dedede", 600);
-//		chartSeries.set("Rosalina", 600);
-//		chartSeries.set("Marth", 600);
-//		chartSeries.set("Peach", 678);
-//		chartSeries.set("Luigi", 765);
-//		chartSeries.set("Pikmin", 789);
-//		chartSeries.set("Wii Fit Trainer", 890);
-//		chartSeries.set("Villager", 1023);
-//		chartSeries.set("Pit", 2001);
-//		chartSeries.set("Bowser", 6000);
-//		chartSeries.set("Mega Man", 6980);
-//		chartSeries.set("Toon Link", 7212);
-//		chartSeries.set("Fox", 7342);
-//		chartSeries.set("Kirby", 7990);
-		chartSeries.set("Sonic", 8763);
-		chartSeries.set("Pikachu", 8890);
-		chartSeries.set("Samus", 8900);
-		chartSeries.set("Link", 9000);
-		chartSeries.set("Zelda", 10200);
-		chartSeries.set("Donkey Kong", 10300);
-		chartSeries.set("Zero Suit Samus", 11300);
-		chartSeries.set("Mario", 12340);
+		List<CharacterRankPosition> charactersRank = analyticsController.getCharactersRank();
+		for (CharacterRankPosition characterRankPosition : charactersRank) {
+			chartSeries.set(characterRankPosition.getCharacter().getPrintableName(), characterRankPosition.getRefs());
+		}
 		characterRankChartModel.addSeries(chartSeries);
 		Axis xAxis = characterRankChartModel.getAxis(AxisType.X);
 		xAxis.setLabel("Tweets");
 		xAxis.setMin(0);
-		xAxis.setMax(15000);
 	}
 
 	private void createWordCloud() {

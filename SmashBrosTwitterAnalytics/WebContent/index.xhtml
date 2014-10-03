@@ -5,6 +5,11 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 <h:head>
+	<meta property="fb:app_id" content="APP_ID" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="DESKTOP_OBJECT_URL" />
+	<meta property="og:title" content="#SmashBros Twitter Analytics" />
+	<meta property="og:image" content="IMAGE_URL" />
 	<script async="async" src="//platform.twitter.com/widgets.js"
 		charset="utf-8" />
 	<script src="jqcloud.js" charset="utf-8" />
@@ -24,19 +29,35 @@
 	</script>
 </h:head>
 <h:body>
+	<script>
+	  window.fbAsyncInit = function() {
+	    FB.init({
+	      appId      : '798343580227666',
+	      xfbml      : true,
+	      version    : 'v2.1'
+	    });
+	  };
+	  (function(d, s, id){
+	     var js, fjs = d.getElementsByTagName(s)[0];
+	     if (d.getElementById(id)) {return;}
+	     js = d.createElement(s); js.id = id;
+	     js.src = "//connect.facebook.net/en_US/sdk.js";
+	     fjs.parentNode.insertBefore(js, fjs);
+	   }(document, 'script', 'facebook-jssdk'));
+	</script>
 	<div class="header">
 		<div class="header-title">
 			<h1>#SmashBros Twitter Analytics</h1>
 		</div>
 		<div class="menu">
-			<a href="about.xhtml">About</a> <a href="contact.xhtml"
+			<a href="http://www.dgimenes.com/2014/10/smashbros-twitter-analytics/">About</a> <a href="mailto:danielcgimenes@gmail.com"
 				style="padding-left: 15px">Contact</a>
 		</div>
 	</div>
 	<div class="main-container">
 		<div class="content-area">
 			<h2 class="numOfTweets">#{analyticsBean.totalTweetCount}
-				captured tweets... [Status: online]</h2>
+				captured tweets... [Capture: online]</h2>
 			<br /> <br />
 			<h2 class="block-title">Most cited words:</h2>
 			<div id="wordCloud" />
@@ -68,8 +89,8 @@
 	<br />
 	<hr />
 	<div class="footer">
-		Created by: <a href="mailto:danielcgimenes@gmail.com">Daniel
-			Gimenes</a> <a href="https://twitter.com/danielgimenes">@danielgimenes</a>
+		Created by: <a href="mailto:danielcgimenes@gmail.com">Daniel Costa
+			Gimenes</a> (<a href="http://www.dgimenes.com/">http://www.dgimenes.com/</a>)
 	</div>
 	<br />
 	<br />

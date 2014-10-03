@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 
 import br.com.dgimenes.smashbrostwitterstreamprocessor.control.configuration.DbAccessConfiguration;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.CharacterReference;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.SmashBrosCharacter;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.TweetDatabaseDelayedPersistManager;
-import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.SmashBrosCharacter;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.Tweet;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.util.Logger;
 

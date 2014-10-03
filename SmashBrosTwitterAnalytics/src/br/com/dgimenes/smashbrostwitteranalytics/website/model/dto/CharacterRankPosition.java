@@ -1,16 +1,23 @@
-package br.com.dgimenes.smashbrostwitterstreamprocessor.persistence;
+package br.com.dgimenes.smashbrostwitteranalytics.website.model.dto;
 
+import br.com.dgimenes.smashbrostwitteranalytics.website.model.SmashBrosCharacter;
 
-public class CharacterReference {
+public class CharacterRankPosition {
 	private SmashBrosCharacter character;
+	private Long refs;
 
-	public CharacterReference(SmashBrosCharacter character) {
+	public CharacterRankPosition(SmashBrosCharacter character, Long refs) {
 		super();
 		this.character = character;
+		this.refs = refs;
 	}
 
 	public SmashBrosCharacter getCharacter() {
 		return character;
+	}
+
+	public Long getRefs() {
+		return refs;
 	}
 
 	@Override
@@ -29,7 +36,7 @@ public class CharacterReference {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CharacterReference other = (CharacterReference) obj;
+		CharacterRankPosition other = (CharacterRankPosition) obj;
 		if (character != other.character)
 			return false;
 		return true;
@@ -37,7 +44,6 @@ public class CharacterReference {
 
 	@Override
 	public String toString() {
-		return "CharReference [character=" + character + "]";
+		return "CharacterRankPosition [character=" + character + ", refs=" + refs + "]";
 	}
-
 }

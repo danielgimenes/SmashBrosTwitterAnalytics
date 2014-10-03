@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import br.com.dgimenes.smashbrostwitterstreamprocessor.control.configuration.DbAccessConfiguration;
-import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.SmashBrosCharacter;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.Tweet;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.WordOccurrence;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.util.Logger;

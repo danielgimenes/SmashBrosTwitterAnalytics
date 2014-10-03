@@ -23,17 +23,20 @@
  */
 package br.com.dgimenes.smashbrostwitteranalytics.website.model.dto;
 
-public class WordCount {
-	private String word;
+import java.util.Date;
+
+public class TweetCountPerDay {
+	private Date day;
 	private Long count;
 
-	public WordCount(String word, Long count) {
-		this.word = word;
+	public TweetCountPerDay(Date day, Long count) {
+		super();
+		this.day = day;
 		this.count = count;
 	}
 
-	public String getWord() {
-		return word;
+	public Date getDay() {
+		return day;
 	}
 
 	public Long getCount() {
@@ -41,15 +44,10 @@ public class WordCount {
 	}
 
 	@Override
-	public String toString() {
-		return "WordCount [word=" + word + ", count=" + count + "]";
-	}
-
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((word == null) ? 0 : word.hashCode());
+		result = prime * result + ((day == null) ? 0 : day.hashCode());
 		return result;
 	}
 
@@ -61,13 +59,17 @@ public class WordCount {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		WordCount other = (WordCount) obj;
-		if (word == null) {
-			if (other.word != null)
+		TweetCountPerDay other = (TweetCountPerDay) obj;
+		if (day == null) {
+			if (other.day != null)
 				return false;
-		} else if (!word.equals(other.word))
+		} else if (!day.equals(other.day))
 			return false;
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "TweetCountPerDay [day=" + day + ", count=" + count + "]";
+	}
 }

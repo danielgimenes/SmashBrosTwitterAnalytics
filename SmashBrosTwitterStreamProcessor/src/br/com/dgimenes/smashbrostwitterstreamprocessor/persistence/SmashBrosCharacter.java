@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model;
+package br.com.dgimenes.smashbrostwitterstreamprocessor.persistence;
 
 public enum SmashBrosCharacter {
 	MARIO("mario"), //

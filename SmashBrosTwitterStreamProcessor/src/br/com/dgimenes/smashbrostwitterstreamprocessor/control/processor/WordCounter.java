@@ -76,6 +76,9 @@ public class WordCounter implements TweetProcessor {
 		wordsToIgnore.add("i'm");
 		wordsToIgnore.add("i’m");
 		wordsToIgnore.add("how");
+		wordsToIgnore.add("ht…");
+		wordsToIgnore.add("smash");
+		wordsToIgnore.add("bros");
 	}
 
 	public WordCounter(DbAccessConfiguration dbAccessConfiguration) {

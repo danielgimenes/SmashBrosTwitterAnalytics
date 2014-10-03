@@ -1,3 +1,26 @@
+/*
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2014 Daniel Gimenes
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package br.com.dgimenes.smashbrostwitteranalytics.website.model;
 
 import java.util.Date;
@@ -15,10 +38,14 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "tweets")
-@NamedQueries({ @NamedQuery(name = "Tweet.count", query = "SELECT COUNT(t.id) FROM Tweet t"),
-	@NamedQuery(name = "Tweet.latest", query = "SELECT t FROM Tweet t WHERE t.lang = \"en\" OR t.lang = \"und\" ORDER BY t.tweetTime DESC"),
-		@NamedQuery(name = "Tweet.mostUsedWords", query = "SELECT COUNT(t.id) FROM Tweet t") })
-@NamedNativeQueries({ @NamedNativeQuery(name = "Tweet.countPerHour", query = "SELECT TO_CHAR(time, 'YYYYMMDDHH24') AS start, count(id) FROM tweets WHERE time BETWEEN ? AND ? GROUP BY start ORDER BY start;"), })
+@NamedQueries({
+		@NamedQuery(name = "Tweet.count", query = "SELECT COUNT(t.id) FROM Tweet t"),
+		@NamedQuery(name = "Tweet.latest", query = "SELECT t FROM Tweet t WHERE t.lang = \"en\" OR t.lang = \"und\" ORDER BY t.tweetTime DESC"), })
+@NamedNativeQueries({
+		@NamedNativeQuery(name = "Tweet.countPerHour", query = "SELECT TO_CHAR(time, 'YYYYMMDDHH24') AS start, count(id) FROM tweets WHERE time BETWEEN ? AND ? GROUP BY start ORDER BY start;"),
+		@NamedNativeQuery(name = "Tweet.countPerDay", query = "SELECT TO_CHAR(time, 'YYYYMMDD') AS start, count(id) FROM tweets WHERE time BETWEEN ? AND ? GROUP BY start ORDER BY start;"),
+		@NamedNativeQuery(name = "Tweet.charRank", query = "SELECT character, refs FROM charactersrank ORDER BY refs DESC LIMIT 10"),
+		@NamedNativeQuery(name = "Tweet.mostUsedWords", query = "SELECT word, count FROM wordcounts ORDER BY count DESC LIMIT 30"), })
 public class Tweet {
 	@Id
 	private Long id;
@@ -29,7 +56,7 @@ public class Tweet {
 
 	@Column(nullable = false)
 	private String userName;
-	
+
 	@Column(nullable = false)
 	private String screenName;
 
@@ -48,7 +75,8 @@ public class Tweet {
 	public Tweet() {
 	}
 
-	public Tweet(long id, Date tweetTime, String userName, String screenName, String tweet, Long rtId, String lang, boolean isRT) {
+	public Tweet(long id, Date tweetTime, String userName, String screenName, String tweet, Long rtId, String lang,
+			boolean isRT) {
 		super();
 		this.id = id;
 		this.tweetTime = tweetTime;
@@ -71,7 +99,7 @@ public class Tweet {
 	public String getUserName() {
 		return userName;
 	}
-	
+
 	public String getScreenName() {
 		return screenName;
 	}
