@@ -14,10 +14,10 @@ import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.WordOcc
 import br.com.dgimenes.smashbrostwitterstreamprocessor.util.Utils;
 
 public class TweetDatabaseDelayedPersistManager {
-	public static final long SECONDS_BETWEEN_PERSIST = 1;
+	public static final long SECONDS_BETWEEN_PERSIST = 3;
 	private BatchAsyncPersistExecuter persistExecuter;
 	private static TweetDatabaseDelayedPersistManager instance;
-	private boolean shutdownProcess;
+	private static boolean shutdownProcess = false;
 	private ConcurrentLinkedQueue<Tweet> tweetsToPersist;
 	private ConcurrentLinkedQueue<WordOccurrence> wordOccurencesToPersist;
 	private ConcurrentLinkedQueue<CharReference> charReferencesToPersist;
@@ -26,7 +26,6 @@ public class TweetDatabaseDelayedPersistManager {
 	private TweetDatabaseDelayedPersistManager(DbAccessConfiguration dbAccessConfig) {
 		this.dbAccessConfig = dbAccessConfig;
 		this.persistExecuter = new BatchAsyncPersistExecuter();
-		this.shutdownProcess = false;
 		this.tweetsToPersist = new ConcurrentLinkedQueue<Tweet>();
 		new Thread(this.persistExecuter).start();
 	}
@@ -49,6 +48,10 @@ public class TweetDatabaseDelayedPersistManager {
 	public void persistCharReference(CharReference reference) {
 		this.charReferencesToPersist.add(reference);
 	}
+	
+	public static void shutdown() {
+		TweetDatabaseDelayedPersistManager.shutdownProcess = true;
+	}
 
 	private class BatchAsyncPersistExecuter implements Runnable {
 		private static final String INSERT_TWEET_SQL = "INSERT INTO tweets(id, time, rt, rtid, lang, username, screenname, tweet) VALUES (?,?,?,?,?,?,?,?);";
@@ -56,7 +59,7 @@ public class TweetDatabaseDelayedPersistManager {
 		private List<Tweet> tweetsOnTransaction;
 		private List<WordOccurrence> wordCountsOnTransaction;
 		private List<CharReference> charReferencesOnTransaction;
-		
+
 		public BatchAsyncPersistExecuter() {
 			tweetsOnTransaction = new ArrayList<Tweet>();
 			wordCountsOnTransaction = new ArrayList<WordOccurrence>();
@@ -65,7 +68,8 @@ public class TweetDatabaseDelayedPersistManager {
 
 		@Override
 		public void run() {
-			while (!shutdownProcess) {
+			System.out.println("BatchAsyncPersistExecuter STARTED");
+			while (!TweetDatabaseDelayedPersistManager.shutdownProcess) {
 				Utils.sleepSeconds(SECONDS_BETWEEN_PERSIST);
 				try {
 					openDbConnection();
@@ -85,6 +89,7 @@ public class TweetDatabaseDelayedPersistManager {
 					rollbackCharRank();
 				}
 			}
+			System.out.println("BatchAsyncPersistExecuter STOPPED");
 		}
 
 		private void openDbConnection() throws SQLException {
@@ -118,9 +123,12 @@ public class TweetDatabaseDelayedPersistManager {
 				statement.setString(7, tweet.getScreenName());
 				statement.setString(8, tweet.getTweet());
 				statement.executeUpdate();
+				String tweetStr = tweet.getTweet();
+				System.out.println("Persisted [" + tweet.getId() + "] "
+						+ tweetStr.substring(0, tweetStr.length() > 80 ? 80 : tweetStr.length()));
 			}
 		}
-		
+
 		private void rollbackTweets() {
 			tweetsToPersist.addAll(tweetsOnTransaction);
 		}

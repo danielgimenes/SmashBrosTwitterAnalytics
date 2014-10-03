@@ -23,6 +23,7 @@
  */
 package br.com.dgimenes.smashbrostwitterstreamprocessor.control;
 
+import java.io.File;
 import java.io.IOException;
 
 import twitter4j.FilterQuery;
@@ -36,9 +37,13 @@ import br.com.dgimenes.smashbrostwitterstreamprocessor.control.processor.Charact
 import br.com.dgimenes.smashbrostwitterstreamprocessor.control.processor.TweetPersist;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.control.processor.WordCounter;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.exception.InvalidConfigurationFileException;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.TweetDatabaseDelayedPersistManager;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.TwitterAppAccount;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.util.Utils;
 
 public class SmashBrosTweetsStreamingReceiver {
+	private static final String EXIT_FLAG_FILE = "/tmp/exitsmash";
+
 	public static void main(String[] args) throws TwitterException, IOException {
 		Configuration config;
 		if (args != null && args.length == 1) {
@@ -69,8 +74,14 @@ public class SmashBrosTweetsStreamingReceiver {
 		FilterQuery query = new FilterQuery();
 		query.track(config.getTweetTagsToTrack());
 		twitterStream.filter(query);
-
-		// add finalization
+		boolean timeToShutdown = false;
+		while (!timeToShutdown) {
+			Utils.sleepSeconds(1);
+			timeToShutdown = new File(EXIT_FLAG_FILE).exists();
+		}
+		twitterStream.shutdown();
+		TweetDatabaseDelayedPersistManager.shutdown();
+		new File(EXIT_FLAG_FILE).delete();
 	}
 
 	private static void printUsageMessage() {

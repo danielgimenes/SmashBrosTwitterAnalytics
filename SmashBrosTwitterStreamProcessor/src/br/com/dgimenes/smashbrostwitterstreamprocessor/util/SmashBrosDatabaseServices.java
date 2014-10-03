@@ -39,7 +39,7 @@ public class SmashBrosDatabaseServices {
 	private static final String SERVER_NAME = "localhost";
 	private static final String PORT_NUMBER = "5432";
 	private static final String USER = "postgres";
-	private static final String PASSWD = "cogitoR341";
+	private static final String PASSWD = "";
 	private static final String DB_NAME = "smashbrostweets_db";
 	private static final String INSERT_TWEET_SQL = "INSERT INTO tweets(id, time, rt, rtid, lang, username, screenname, tweet) VALUES (?,?,?,?,?,?,?,?);";
 	private static final String ALL_TWEET_IDS_WHERE_LANG_NULL_SQL = "SELECT id FROM tweets WHERE lang IS NULL;";
