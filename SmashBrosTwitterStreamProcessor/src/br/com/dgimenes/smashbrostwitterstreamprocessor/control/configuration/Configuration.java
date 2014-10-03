@@ -21,24 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package br.com.dgimenes.smashbrostwitterstreamprocessor.control;
+package br.com.dgimenes.smashbrostwitterstreamprocessor.control.configuration;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
 import br.com.dgimenes.smashbrostwitterstreamprocessor.exception.InvalidConfigurationFileException;
-import br.com.dgimenes.smashbrostwitterstreamprocessor.model.TwitterAppAccount;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.TwitterAppAccount;
 
 public class Configuration {
 	private static String[] itemNames = new String[] { "Twitter.apiKey", //
 			"Twitter.apiKeySecret", //
 			"Twitter.accessToken", //
 			"Twitter.accessTokenSecret", //
-			"Twitter.tagsToTrack" //
+			"Twitter.tagsToTrack", //
+			"Database.connectionString", //
+			"Database.user", //
+			"Database.password", //
 	};
 	private TwitterAppAccount twitterAppAccount;
 	private String[] tweetTagsToTrack;
+	private DbAccessConfiguration dbAccessConfiguration;
 
 	public static Configuration loadConfigFromFile(String filePath) throws InvalidConfigurationFileException {
 		Properties properties = new Properties();
@@ -56,6 +60,8 @@ public class Configuration {
 				properties.getProperty("Twitter.accessTokenSecret"), properties.getProperty("Twitter.apiKey"),
 				properties.getProperty("Twitter.apiKeySecret"));
 		this.tweetTagsToTrack = properties.getProperty("Twitter.tagsToTrack").split(",");
+		this.dbAccessConfiguration = new DbAccessConfiguration(properties.getProperty("Database.connectionString"),
+				properties.getProperty("Database.user"), properties.getProperty("Database.password"));
 	}
 
 	private void checkForAllItems(Properties properties) throws InvalidConfigurationFileException {
@@ -79,4 +85,7 @@ public class Configuration {
 		return this.tweetTagsToTrack;
 	}
 
+	public DbAccessConfiguration getDbAccessConfiguration() {
+		return dbAccessConfiguration;
+	}
 }

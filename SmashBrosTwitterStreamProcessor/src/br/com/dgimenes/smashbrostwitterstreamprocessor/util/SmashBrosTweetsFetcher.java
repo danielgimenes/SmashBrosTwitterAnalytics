@@ -23,9 +23,9 @@
  */
 package br.com.dgimenes.smashbrostwitterstreamprocessor.util;
 
-import br.com.dgimenes.smashbrostwitterstreamprocessor.control.Configuration;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.control.configuration.Configuration;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.exception.InvalidConfigurationFileException;
-import br.com.dgimenes.smashbrostwitterstreamprocessor.model.TwitterAppAccount;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.TwitterAppAccount;
 import twitter4j.Query;
 import twitter4j.Query.ResultType;
 import twitter4j.QueryResult;

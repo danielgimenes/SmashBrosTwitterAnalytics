@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package br.com.dgimenes.smashbrostwitterstreamprocessor.datamapping;
+package br.com.dgimenes.smashbrostwitterstreamprocessor.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -31,10 +31,9 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
-import br.com.dgimenes.smashbrostwitterstreamprocessor.control.Configuration;
-import br.com.dgimenes.smashbrostwitterstreamprocessor.datamapping.SmashBrosDatabaseServices;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.control.configuration.Configuration;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.exception.InvalidConfigurationFileException;
-import br.com.dgimenes.smashbrostwitterstreamprocessor.model.TwitterAppAccount;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.TwitterAppAccount;
 
 public class UpdateOldSmashBrosTweets {
 

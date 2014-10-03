@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package br.com.dgimenes.smashbrostwitterstreamprocessor.model;
+package br.com.dgimenes.smashbrostwitterstreamprocessor.control.processor;
 
-public enum SmashBrosCharacter {
-	PIKACHU
+import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.Tweet;
 
+public interface TweetProcessor {
+	public abstract void process(Tweet tweet);
 }

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package br.com.dgimenes.smashbrostwitterstreamprocessor.control;
+package br.com.dgimenes.smashbrostwitterstreamprocessor.control.debug;
 
 import twitter4j.StallWarning;
 import twitter4j.Status;

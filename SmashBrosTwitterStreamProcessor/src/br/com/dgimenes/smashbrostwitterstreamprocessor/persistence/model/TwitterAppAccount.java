@@ -21,77 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package br.com.dgimenes.smashbrostwitterstreamprocessor.model;
+package br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model;
 
-import java.util.Date;
+import java.io.Serializable;
 
-public class Tweet {
-	private Long id;
+public class TwitterAppAccount implements Serializable {
+	private static final long serialVersionUID = -3959342700068003071L;
+	private String accessToken;
+	private String accessTokenSecret;
+	private String apiKey;
+	private String apiKeySecret;
 
-	private Date tweetTime;
-
-	private String userName;
-
-	private String screenName;
-
-	private String tweet;
-
-	private Long rtId = 0L;
-
-	private String lang;
-
-	private Boolean isRT;
-
-	public Tweet(long id, Date tweetTime, String userName, String screenName, String tweet, Long rtId, String lang,
-			boolean isRT) {
+	public TwitterAppAccount(String accessToken, String accessTokenSecret, String apiKey, String apiKeySecret) {
 		super();
-		this.id = id;
-		this.tweetTime = tweetTime;
-		this.userName = userName;
-		this.screenName = screenName;
-		this.tweet = tweet;
-		this.rtId = rtId == null ? 0L : rtId;
-		this.lang = lang;
-		this.isRT = isRT;
+		this.accessToken = accessToken;
+		this.accessTokenSecret = accessTokenSecret;
+		this.apiKey = apiKey;
+		this.apiKeySecret = apiKeySecret;
 	}
 
-	public Long getId() {
-		return id;
+	public String getAccessToken() {
+		return accessToken;
 	}
 
-	public Date getTweetTime() {
-		return tweetTime;
+	public String getAccessTokenSecret() {
+		return accessTokenSecret;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getApiKey() {
+		return apiKey;
 	}
 
-	public String getScreenName() {
-		return screenName;
-	}
-
-	public String getTweet() {
-		return tweet;
-	}
-
-	public Long getRtId() {
-		return rtId;
-	}
-
-	public String getLang() {
-		return lang;
-	}
-
-	public Boolean isRT() {
-		return isRT;
+	public String getApiKeySecret() {
+		return apiKeySecret;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + ((accessToken == null) ? 0 : accessToken.hashCode());
+		result = prime * result + ((apiKey == null) ? 0 : apiKey.hashCode());
 		return result;
 	}
 
@@ -103,14 +73,22 @@ public class Tweet {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Tweet other = (Tweet) obj;
-		if (id != other.id)
+		TwitterAppAccount other = (TwitterAppAccount) obj;
+		if (accessToken == null) {
+			if (other.accessToken != null)
+				return false;
+		} else if (!accessToken.equals(other.accessToken))
+			return false;
+		if (apiKey == null) {
+			if (other.apiKey != null)
+				return false;
+		} else if (!apiKey.equals(other.apiKey))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Tweet [id=" + id + ", userName=" + userName + ", tweet=" + tweet + "]";
+		return "TwitterDeveloperAccount [accessToken=" + accessToken + ", apiKey=" + apiKey + "]";
 	}
 }

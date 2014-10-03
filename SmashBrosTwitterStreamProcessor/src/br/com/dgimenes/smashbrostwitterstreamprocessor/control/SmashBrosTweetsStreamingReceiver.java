@@ -26,13 +26,17 @@ package br.com.dgimenes.smashbrostwitterstreamprocessor.control;
 import java.io.IOException;
 
 import twitter4j.FilterQuery;
-import twitter4j.StatusListener;
 import twitter4j.TwitterException;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 import twitter4j.conf.ConfigurationBuilder;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.control.configuration.Configuration;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.control.debug.DebugProcessor;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.control.processor.CharacterReferenceIdentifier;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.control.processor.TweetPersist;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.control.processor.WordCounter;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.exception.InvalidConfigurationFileException;
-import br.com.dgimenes.smashbrostwitterstreamprocessor.model.TwitterAppAccount;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.TwitterAppAccount;
 
 public class SmashBrosTweetsStreamingReceiver {
 	public static void main(String[] args) throws TwitterException, IOException {
@@ -55,13 +59,18 @@ public class SmashBrosTweetsStreamingReceiver {
 				.setOAuthConsumerSecret(twitterAppAccount.getApiKeySecret())
 				.setOAuthAccessToken(twitterAppAccount.getAccessToken())
 				.setOAuthAccessTokenSecret(twitterAppAccount.getAccessTokenSecret());
-//		StatusListener listener = new SmashBrosTwitterStatusListener();
-		StatusListener listener = new DebugStatusListener();
+		SmashBrosTwitterStatusListener listener = new SmashBrosTwitterStatusListener();
+		listener.addProcessor(new DebugProcessor());
+		listener.addProcessor(new TweetPersist(config.getDbAccessConfiguration()));
+		listener.addProcessor(new CharacterReferenceIdentifier());
+		listener.addProcessor(new WordCounter());
 		TwitterStream twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
 		twitterStream.addListener(listener);
 		FilterQuery query = new FilterQuery();
 		query.track(config.getTweetTagsToTrack());
 		twitterStream.filter(query);
+
+		// add finalization
 	}
 
 	private static void printUsageMessage() {
