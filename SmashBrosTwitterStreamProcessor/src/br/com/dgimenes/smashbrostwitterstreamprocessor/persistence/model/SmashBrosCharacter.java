@@ -47,8 +47,8 @@ public enum SmashBrosCharacter {
 	KING_DEDEDE("king dedede", "dedede"), //
 	LUCARIO("lucario"), //
 	LITTLE_MAC("little mac", "mac"), //
-	DIDDY_KONG("diddy kong", ""), //
-	ZERO_SUIT_SAMUS("zero suit samus", "zero suit"), //
+	DIDDY_KONG("diddy kong"), //
+	ZERO_SUIT_SAMUS("zero suit samus", "suit samus", "zero samus"), //
 	SHEIK("sheik"), //
 	YOSHI("yoshi"), //
 	CHARIZARD("charizard"), //

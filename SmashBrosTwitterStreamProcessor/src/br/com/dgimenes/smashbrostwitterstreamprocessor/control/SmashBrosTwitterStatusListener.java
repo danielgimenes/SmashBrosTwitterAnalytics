@@ -51,11 +51,14 @@ public class SmashBrosTwitterStatusListener implements StatusListener {
 
 	@Override
 	public void onStatus(Status status) {
-		long rtId = status.getRetweetedStatus() == null ? 0 : status.getRetweetedStatus().getId();
-		Tweet tweet = new Tweet(status.getId(), status.getCreatedAt(), status.getUser().getName(), status.getUser()
-				.getScreenName(), status.getText(), rtId, status.getLang(), status.isRetweet());
-		for (TweetProcessor tweetProcessor : processors) {
-			tweetProcessor.process(tweet);
+		String language = status.getLang();
+		if (language.equals("en") || language.equals("und") || language.equals("")) {
+			long rtId = status.getRetweetedStatus() == null ? 0 : status.getRetweetedStatus().getId();
+			Tweet tweet = new Tweet(status.getId(), status.getCreatedAt(), status.getUser().getName(), status.getUser()
+					.getScreenName(), status.getText(), rtId, status.getLang(), status.isRetweet());
+			for (TweetProcessor tweetProcessor : processors) {
+				tweetProcessor.process(tweet);
+			}
 		}
 	}
 

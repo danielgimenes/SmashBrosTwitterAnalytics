@@ -16,8 +16,13 @@ public class Logger {
 		printMessage(message, javaClass, LogLevel.ERROR);
 	}
 
+	public static void debug(String message, Class javaClass) {
+		// printMessage(message, javaClass, LogLevel.DEBUG);
+	}
+
 	private static void printMessage(String message, Class javaClass, LogLevel logLevel) {
 		Date now = Calendar.getInstance().getTime();
-		System.out.println(String.format("[%1$tF %1$tT] [%2$s] - %3$s - %4$s", now, logLevel, javaClass, message));
+		System.out.println(String.format("[%1$tF %1$tT] [%2$s] - %3$s - %4$s", now, logLevel,
+				javaClass.getSimpleName(), message));
 	}
 }

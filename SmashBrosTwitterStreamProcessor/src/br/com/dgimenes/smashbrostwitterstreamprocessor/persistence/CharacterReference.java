@@ -2,10 +2,10 @@ package br.com.dgimenes.smashbrostwitterstreamprocessor.persistence;
 
 import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.SmashBrosCharacter;
 
-public class CharReference {
+public class CharacterReference {
 	private SmashBrosCharacter character;
 
-	public CharReference(SmashBrosCharacter character) {
+	public CharacterReference(SmashBrosCharacter character) {
 		super();
 		this.character = character;
 	}
@@ -30,7 +30,7 @@ public class CharReference {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CharReference other = (CharReference) obj;
+		CharacterReference other = (CharacterReference) obj;
 		if (character != other.character)
 			return false;
 		return true;
