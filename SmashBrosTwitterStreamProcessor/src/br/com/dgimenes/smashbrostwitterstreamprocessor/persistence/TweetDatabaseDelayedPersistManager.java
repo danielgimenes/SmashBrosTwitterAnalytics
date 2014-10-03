@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.control.configuration.DbAccessConfiguration;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.Tweet;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.WordOccurrence;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.util.Logger;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.util.Utils;
 
 public class TweetDatabaseDelayedPersistManager {
@@ -48,7 +49,7 @@ public class TweetDatabaseDelayedPersistManager {
 	public void persistCharReference(CharReference reference) {
 		this.charReferencesToPersist.add(reference);
 	}
-	
+
 	public static void shutdown() {
 		TweetDatabaseDelayedPersistManager.shutdownProcess = true;
 	}
@@ -68,7 +69,7 @@ public class TweetDatabaseDelayedPersistManager {
 
 		@Override
 		public void run() {
-			System.out.println("BatchAsyncPersistExecuter STARTED");
+			Logger.info("BatchAsyncPersistExecuter STARTED", BatchAsyncPersistExecuter.class);
 			while (!TweetDatabaseDelayedPersistManager.shutdownProcess) {
 				Utils.sleepSeconds(SECONDS_BETWEEN_PERSIST);
 				try {
@@ -89,7 +90,7 @@ public class TweetDatabaseDelayedPersistManager {
 					rollbackCharRank();
 				}
 			}
-			System.out.println("BatchAsyncPersistExecuter STOPPED");
+			Logger.info("BatchAsyncPersistExecuter STOPPED", BatchAsyncPersistExecuter.class);
 		}
 
 		private void openDbConnection() throws SQLException {
@@ -124,8 +125,8 @@ public class TweetDatabaseDelayedPersistManager {
 				statement.setString(8, tweet.getTweet());
 				statement.executeUpdate();
 				String tweetStr = tweet.getTweet();
-				System.out.println("Persisted [" + tweet.getId() + "] "
-						+ tweetStr.substring(0, tweetStr.length() > 80 ? 80 : tweetStr.length()));
+				Logger.info("Persisted [" + tweet.getId() + "] "
+						+ tweetStr.substring(0, tweetStr.length() > 80 ? 80 : tweetStr.length()), BatchAsyncPersistExecuter.class);
 			}
 		}
 

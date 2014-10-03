@@ -66,8 +66,8 @@ public class SmashBrosTweetsFetcher {
 		try {
 			result = twitter.search(query);
 			for (Status status : result.getTweets()) {
-				System.out.println("@" + status.getUser().getName() + " @" + status.getUser().getScreenName() + ":\n\t"
-						+ status.getText() + "\n");
+				Logger.info("@" + status.getUser().getName() + " @" + status.getUser().getScreenName() + ":\n\t"
+						+ status.getText() + "\n", SmashBrosTweetsFetcher.class);
 			}
 		} catch (TwitterException e) {
 			e.printStackTrace();

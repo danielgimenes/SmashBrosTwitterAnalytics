@@ -75,7 +75,7 @@ public class UpdateOldSmashBrosTweets {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println("finished");
+		Logger.info("finished", UpdateOldSmashBrosTweets.class);
 	}
 	
 	private static void printUsageMessage() {

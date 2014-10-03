@@ -32,6 +32,7 @@ import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.control.processor.TweetProcessor;
 import br.com.dgimenes.smashbrostwitterstreamprocessor.persistence.model.Tweet;
+import br.com.dgimenes.smashbrostwitterstreamprocessor.util.Logger;
 
 public class SmashBrosTwitterStatusListener implements StatusListener {
 	private List<TweetProcessor> processors;
@@ -60,28 +61,29 @@ public class SmashBrosTwitterStatusListener implements StatusListener {
 
 	@Override
 	public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
-		System.err.println("StatusDeletionNotice");
+		Logger.error("StatusDeletionNotice", SmashBrosTwitterStatusListener.class);
 	}
 
 	@Override
 	public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
-		System.err.println("ERROR: MISSED " + numberOfLimitedStatuses + " TWEETS");
+		Logger.error("ERROR: MISSED " + numberOfLimitedStatuses + " TWEETS", SmashBrosTwitterStatusListener.class);
 	}
 
 	@Override
 	public void onException(Exception ex) {
 		ex.printStackTrace();
+		Logger.error(ex.getMessage(), SmashBrosTwitterStatusListener.class);
 	}
 
 	@Override
 	public void onScrubGeo(long arg0, long arg1) {
-		System.err.println("onScrubGeo");
+		Logger.error("onScrubGeo", SmashBrosTwitterStatusListener.class);
 
 	}
 
 	@Override
 	public void onStallWarning(StallWarning arg0) {
-		System.err.println("onStallWarning");
+		Logger.error("onStallWarning", SmashBrosTwitterStatusListener.class);
 
 	}
 };

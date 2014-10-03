@@ -77,8 +77,9 @@ public class SmashBrosDatabaseServices {
 		}
 		return ids;
 	}
-	
-	public synchronized void updateTweetRTandLang(long tweetId, boolean isRT, long rtId, String lang) throws SQLException {
+
+	public synchronized void updateTweetRTandLang(long tweetId, boolean isRT, long rtId, String lang)
+			throws SQLException {
 		if (conn == null || conn.isClosed()) {
 			createConnection();
 		}
@@ -91,7 +92,7 @@ public class SmashBrosDatabaseServices {
 		statement.executeUpdate();
 		conn.commit();
 		conn.setAutoCommit(true);
-		System.out.println(String.format("tweet [%d] updated", tweetId));
+		Logger.info(String.format("tweet [%d] updated", tweetId), SmashBrosDatabaseServices.class);
 	}
 
 	public synchronized void persistTweet(long tweetId, Date tweetTime, boolean isRT, long rtId, String lang,
@@ -112,7 +113,7 @@ public class SmashBrosDatabaseServices {
 		statement.executeUpdate();
 		conn.commit();
 		conn.setAutoCommit(true);
-		System.out.println(String.format("tweet [%d] persisted", tweetId));
+		Logger.info(String.format("tweet [%d] persisted", tweetId), SmashBrosDatabaseServices.class);
 	}
 
 	public List<Long> getAllTweetIdsWhereScreenNameIsNull() throws SQLException {
@@ -139,6 +140,6 @@ public class SmashBrosDatabaseServices {
 		statement.executeUpdate();
 		conn.commit();
 		conn.setAutoCommit(true);
-		System.out.println(String.format("tweet [%d] updated", tweetId));
+		Logger.info(String.format("tweet [%d] updated", tweetId), SmashBrosDatabaseServices.class);
 	}
 }

@@ -23,6 +23,7 @@
  */
 package br.com.dgimenes.smashbrostwitterstreamprocessor.control.debug;
 
+import br.com.dgimenes.smashbrostwitterstreamprocessor.util.Logger;
 import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
@@ -32,32 +33,32 @@ public class DebugStatusListener implements StatusListener {
 
 	@Override
 	public void onException(Exception exception) {
-		System.out.println("onException: " + exception);
+		Logger.warn("onException: " + exception, DebugStatusListener.class);
 	}
 
 	@Override
 	public void onDeletionNotice(StatusDeletionNotice notice) {
-		System.out.println("onDeletionNotice: " + notice);
+		Logger.warn("onDeletionNotice: " + notice, DebugStatusListener.class);
 	}
 
 	@Override
 	public void onScrubGeo(long arg0, long arg1) {
-		System.out.println("onScrubGeo: " + arg0 + ", " + arg1);
+		Logger.warn("onScrubGeo: " + arg0 + ", " + arg1, DebugStatusListener.class);
 	}
 
 	@Override
 	public void onStallWarning(StallWarning warning) {
-		System.out.println("onStallWarning: " + warning);
+		Logger.warn("onStallWarning: " + warning, DebugStatusListener.class);
 	}
 
 	@Override
 	public void onStatus(Status status) {
-		System.out.println("onStatus: " + status);
+		Logger.info("onStatus: " + status, DebugStatusListener.class);
 	}
 
 	@Override
 	public void onTrackLimitationNotice(int arg0) {
-		System.out.println("onTrackLimitationNotice: " + arg0);
+		Logger.warn("onTrackLimitationNotice: " + arg0, DebugStatusListener.class);
 	}
 
 }
