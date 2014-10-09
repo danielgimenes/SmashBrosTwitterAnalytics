@@ -1,12 +1,15 @@
 SmashBrosTwitterAnalytics
 =========================
 
-\#SmashBros Twitter comments analytics.
+October 3rd was the release date of Super Smash Bros for 3DS. The newest game for Nintendo’s portable video-game console. Knowing this and wanting to practice some programming I decided to create a little pet project. “#SmashBros Twitter Analytics” is composed of two softwares: a service to capture and process Twitter data related to the game, and a website to show some interesting information about the tweets. Both were developed in Java platforms and had their code published on GitHub. 
 
+The website is (for now) hosted on Amazon Web Services, and can be visited through the link: http://54.69.148.65/SmashBrosTwitterAnalytics/
+
+More details can be found at: http://www.dgimenes.com/2014/10/smashbros-twitter-analytics/
 
 ## Status
 
-Under development
+Released
 
 ## License
 
